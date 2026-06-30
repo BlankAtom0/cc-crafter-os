@@ -1,5 +1,5 @@
 local clientURL =
-"https://raw.githubusercontent.com/BlankAtom0/cc-crafter-os/refs/heads/main/src/pocket.lua?token=GHSAT0AAAAAAEAEZXJHQF3FM7RV7S5YDIJE2SDYYSA"
+"https://raw.githubusercontent.com/BlankAtom0/cc-crafter-os/refs/heads/main/src/client/client.lua?token=GHSAT0AAAAAAEAEZXJG33P3LBRHOUKYP6EW2SD2LWQ"
 
 local function printHeader(text)
     print()
