@@ -216,7 +216,7 @@ end
 
 local function drawStatus()
     local age = math.floor((os.epoch("utc") - lastUpdate) / 1000)
-    local stale = lastUpdate == 0 or age > STALE_SECS
+    local stale = lastUpdate == 0 or age > config.STALE_TIMEOUT
     term.setCursorPos(1, H); term.clearLine()
 
     if pendingRequest then
@@ -440,7 +440,9 @@ local function handleClick(x, y)
             if setupMode then
                 error("", 0)
             end
-            multishell.launch({}, "/client/updater.lua")
+            local env = { shell = shell }
+            setmetatable(env, { __index = _G })
+            multishell.launch(env, "/client/updater.lua")
             shell.exit()
             error("", 0)
         elseif x >= W - 1 then
@@ -582,4 +584,4 @@ local function main()
     parallel.waitForAny(ticker, events)
 end
 
-return { client = main, update = update, setupMode = setupMode }
+main()
