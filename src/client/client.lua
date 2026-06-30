@@ -1,7 +1,6 @@
-local STOCK_CHANNEL  = 53321
-local ORDER_CHANNEL  = 53322
-local CHANNEL        = 53323
-local STALE_SECS     = 15
+local config         = require("config")
+local update         = false
+local setupMode      = false
 
 local W, H           = term.getSize()
 local LIST_TOP       = 4
@@ -308,8 +307,8 @@ end
 local function openModem()
     modem = peripheral.find("modem")
     if modem then
-        modem.open(CHANNEL)
-        modem.open(STOCK_CHANNEL)
+        modem.open(config.CLIENT_CHANNEL)
+        modem.open(config.STOCK_CHANNEL)
         return true
     end
     return false
@@ -336,10 +335,10 @@ local function submitOrder()
         senderLabel = os.getComputerLabel() or "UNKNOWN",
         items = items,
         timestamp = os.epoch("utc"),
-        channel = CHANNEL
+        channel = config.CLIENT_CHANNEL
     })
 
-    modem.transmit(ORDER_CHANNEL, CHANNEL, payload)
+    modem.transmit(config.ORDER_CHANNEL, config.CLIENT_CHANNEL, payload)
     pendingRequest = reqId
 end
 
@@ -436,6 +435,19 @@ local function handleOrderTabKey(k)
 end
 
 local function handleClick(x, y)
+    if y == 1 then
+        if x < 20 then
+            if setupMode then
+                error("", 0)
+            end
+            multishell.launch({}, "/client/updater.lua")
+            shell.exit()
+            error("", 0)
+        elseif x >= W - 1 then
+            setupMode = true
+        end
+        return
+    end
     if y == 2 then
         if x >= 2 and x <= 9 then
             tab = "search"; searchFocus = false; addrFocus = false; scroll = 0
@@ -509,9 +521,10 @@ local function main()
             local ev = table.pack(os.pullEvent())
             local e = ev[1]
 
-            if e == "modem_message" then
+            if e == "terminate" then
+            elseif e == "modem_message" then
                 local ch, msg = ev[3], ev[5]
-                if ch == STOCK_CHANNEL or ch == CHANNEL then
+                if ch == config.STOCK_CHANNEL or ch == config.CLIENT_CHANNEL then
                     local ok, payload = pcall(textutils.unserialize, msg)
                     if ok and payload then
                         if payload.type == "stock_update" then
@@ -569,4 +582,4 @@ local function main()
     parallel.waitForAny(ticker, events)
 end
 
-main()
+return { client = main, update = update, setupMode = setupMode }

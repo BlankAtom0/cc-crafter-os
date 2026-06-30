@@ -1,8 +1,8 @@
 local pretty = require("cc.pretty")
 local logFile
 local items
-local SEND_CHANNEL = 53321
-local RECIEVE_CHANNEL = 53322
+local STOCK_CHANNEL = 53321
+local ORDER_CHANNEL = 53322
 
 local function findTicker()
     local t = peripheral.find("Create_StockTicker")
@@ -64,7 +64,7 @@ local function broadcastStock(modem, ticker)
         timestamp = os.epoch("utc"),
         items     = list
     })
-    modem.transmit(SEND_CHANNEL, SEND_CHANNEL, payload)
+    modem.transmit(STOCK_CHANNEL, STOCK_CHANNEL, payload)
     log(string.format("Broadcast: %d unique items (%d bytes)", #list, #payload))
 end
 
@@ -106,7 +106,7 @@ local function processOrder(modem, ticker, order)
         results = results,
         success = not anyFailed
     })
-    modem.transmit(order.channel, RECIEVE_CHANNEL, response)
+    modem.transmit(order.channel, ORDER_CHANNEL, response)
 end
 
 local function main()
@@ -114,22 +114,22 @@ local function main()
     log("Server starting...")
     local ticker = findTicker()
     local modem = findModem()
-    modem.open(RECIEVE_CHANNEL)
-    log("Modem opened on channel " .. RECIEVE_CHANNEL)
-    log("Sending stock to channel " .. SEND_CHANNEL)
+    modem.open(ORDER_CHANNEL)
+    log("Modem opened on channel " .. ORDER_CHANNEL)
+    log("Sending stock to channel " .. STOCK_CHANNEL)
     log("Ticker found: " .. peripheral.getName(ticker))
 
     local function broadcastLoop()
         while true do
             broadcastStock(modem, ticker)
-            sleep(5)
+            sleep(config.SCAN_DELAY)
         end
     end
 
     local function orderLoop()
         while true do
             local _, _, ch, _, msg = os.pullEvent("modem_message")
-            if ch == RECIEVE_CHANNEL then
+            if ch == config.ORDER_CHANNEL then
                 local ok, payload = pcall(textutils.unserialize, msg)
                 if ok and payload and payload.type == "order_request" then
                     log("Recieved order request: " .. tostring(payload.requestId))
