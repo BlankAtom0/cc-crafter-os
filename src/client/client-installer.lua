@@ -1,7 +1,7 @@
 local clientURL =
 "https://raw.githubusercontent.com/BlankAtom0/cc-crafter-os/refs/heads/main/src/client/client.lua?token=GHSAT0AAAAAAEAEZXJG33P3LBRHOUKYP6EW2SD2LWQ"
 local updaterURL =
-"https://raw.githubusercontent.com/BlankAtom0/cc-crafter-os/refs/heads/main/src/client/updater.lua?token=GHSAT0AAAAAAEAEZXJHVFTO2SGEHQW3UXAK2SD2V4Q"
+"https://raw.githubusercontent.com/BlankAtom0/cc-crafter-os/refs/heads/main/src/client/updater.lua?token=GHSAT0AAAAAAEAEZXJHZHHZG4KXC5WPFXNO2SD2XQQ"
 
 local function printHeader(text)
     print()
