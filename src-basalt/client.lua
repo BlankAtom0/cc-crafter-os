@@ -1,10 +1,13 @@
 -- local config     = require("config")
 local basalt            = require("basalt")
+local itemLayer         = require "itemLayer"
 
 local allItems          = {}
 local filtered          = {}
 local searchListStrings = {}
 local order             = {}
+
+local lastUpdated       = 0
 
 local main              = basalt.getMainFrame()
 
@@ -79,14 +82,37 @@ local searchList = searchTab:addList({
     height = "{parent.height - 3}"
 })
 
-local function updateSearchList()
-    for _, item in ipairs(filtered) do
-        local string = ""
-        string = item.displayName .. string.rep(" ", searchList.width)
-        count = "x" .. tostring(item.count)
-        string = string:sub(1, searchList.width - #count) .. count
-        table.insert(searchListStrings, string)
+local function updateSearchList(items)
+    searchList:clear()
+    for _, i in ipairs(items) do
+        local item = ""
+        item = i.displayName .. item.rep(" ", searchList.width)
+        count = "x" .. tostring(i.count)
+        item = item:sub(1, searchList.width - #count) .. count
+        searchList:addItem(item)
     end
+end
+
+local function applyFilter(items)
+    local subset = {}
+    if searchInput.text == "" then
+        subset = allItems
+        return subset
+    end
+    local q = searchInput.text:lower()
+    for _, item in ipairs(allItems) do
+        if item.displayName:lower():find(q, 1, true) or item.name:lower():find(q, 1, true) then
+            subset[#subset + 1] = item
+        end
+    end
+    return subset
+end
+
+local function onStockEvent(data)
+    lastUpdated = data.timestamp or os.epoch("utc")
+    allItems = data.items or {}
+    filtered = applyFilter(allItems)
+    updateSearchList(filtered)
 end
 
 ---- Order Tab ----
@@ -103,6 +129,7 @@ local orderCount = "x" .. tostring(function()
     for _, i in order do tot = tot + i.count end
     return tot
 end)
+
 local orderCountLabel = orderTab:addLabel({
     x = "{parent.width}" - #orderCount - 1,
     y = 1,
@@ -117,5 +144,9 @@ local orderList = orderTab:addList({
     width = "{parent.width}",
     height = "{parent.height - 3}"
 })
+
+basalt.onEvent(itemLayer.stockUpdate, onStockEvent)
+basalt.onEvent("send_order", itemLayer.sendOrder)
+basalt.onEvent("modem_message", itemLayer.handleModemEvent)
 
 basalt.run()

@@ -46,3 +46,5 @@ local function recievePayload(payload)
     end
     return decode(field(payload, "data"))
 end
+
+return { encode = encode, decode = decode, sendData = sendData, recievePayload = recievePayload }
