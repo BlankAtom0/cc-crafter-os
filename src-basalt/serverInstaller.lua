@@ -2,7 +2,7 @@ local itemLayerAddress =
 "https://raw.githubusercontent.com/BlankAtom0/cc-crafter-os/refs/heads/main/src-basalt/itemLayer.lua"
 local linkLayerAddress =
 "https://raw.githubusercontent.com/BlankAtom0/cc-crafter-os/refs/heads/main/src-basalt/linkLayer.lua"
-local clientAddress = "https://raw.githubusercontent.com/BlankAtom0/cc-crafter-os/refs/heads/main/src-basalt/client.lua"
+local serverAddress = "https://raw.githubusercontent.com/BlankAtom0/cc-crafter-os/refs/heads/main/src-basalt/server.lua"
 
 local function printHeader(text)
     print()
@@ -28,30 +28,25 @@ local function askNumber(prompt, default)
 end
 
 local function main()
-    printHeader("Client Installer")
+    printHeader("Server Installer")
     printHeader("Installing dependencies")
-
-    print("Installing basalt")
-    shell.run("wget run https://raw.githubusercontent.com/Pyroxenium/Basalt2/main/install.lua -f")
 
     print("Installing layers")
     shell.run("wget", linkLayerAddress)
     shell.run("wget", itemLayerAddress)
 
-    print("Installing client")
-    shell.run("wget", clientAddress)
+    print("Installing server")
+    shell.run("wget", serverAddress)
 
     printHeader("Creating Config.")
     local stockChannel = askNumber("Enter the stock channel number", 1)
     local orderChannel = askNumber("Enter the order channel number", 1)
-    local clientNo = askNumber("Enter the client number", 1)
-    local staleTimeout = askNumber("Enter stale timeout", 15)
+    local scanDelay = askNumber("Enter scan delay", 5)
 
     local config = {
         STOCK_CHANNEL = stockChannel,
         ORDER_CHANNEL = orderChannel,
-        CLIENT_CHANNEL = orderChannel + clientNo + 1,
-        STALE_TIMEOUT = staleTimeout
+        SCAN_DELAY = scanDelay
     }
 
     local configJson = textutils.serialiseJSON(config)
