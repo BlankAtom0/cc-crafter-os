@@ -22,9 +22,9 @@ local function tableContains(table, value)
 end
 
 local function handleData(data)
-    expect(1, "data", "table", "nil")
-    expect(field(data, "protocol"), "string")
-    expect(field(data, "type"), "string")
+    -- expect(1, "data", "table", "nil")
+    -- expect(field(data, "protocol"), "string")
+    -- expect(field(data, "type"), "string")
 
     if data == nil then return nil end
 
@@ -40,7 +40,7 @@ local function handleData(data)
 end
 
 local function handleModemEvent(event)
-    expect(1, "event", "table")
+    -- expect(1, "event", "table")
 
     if event[1] ~= "modem_message" then
         return nil
@@ -52,7 +52,7 @@ local function handleModemEvent(event)
 end
 
 local function packStock(items)
-    expect(1, "items", "table")
+    -- expect(1, "items", "table")
 
     local data = {
         protocol = PROTOCOL,
@@ -65,20 +65,20 @@ local function packStock(items)
 end
 
 local function sendStock(modem, channel, returnChannel, items)
-    expect(1, "modem", "table")
-    expect(2, "channel", "number")
-    expect(3, "returnChannel", "number")
-    expect(4, "items", "table")
+    -- expect(1, "modem", "table")
+    -- expect(2, "channel", "number")
+    -- expect(3, "returnChannel", "number")
+    -- expect(4, "items", "table")
 
     local data = packStock(items)
     linkLayer.sendData(modem, channel, returnChannel, data)
 end
 
 local function packOrder(items, requestId, address, channel)
-    expect(1, "items", "table")
-    expect(2, "requestID", "string")
-    expect(3, "address", "string")
-    expect(4, "channel", "number")
+    -- expect(1, "items", "table")
+    -- expect(2, "requestID", "string")
+    -- expect(3, "address", "string")
+    -- expect(4, "channel", "number")
 
     local data = {
         protocol = PROTOCOL,
@@ -95,23 +95,23 @@ local function packOrder(items, requestId, address, channel)
 end
 
 local function sendOrder(modem, channel, returnChannel, items, requestId, address)
-    expect(1, "modem", "table")
-    expect(2, "channel", "number")
-    expect(3, "returnChannel", "number")
-    expect(4, "items", "table")
-    expect(5, "requestId", "string")
-    expect(6, "address", "string")
+    -- expect(1, "modem", "table")
+    -- expect(2, "channel", "number")
+    -- expect(3, "returnChannel", "number")
+    -- expect(4, "items", "table")
+    -- expect(5, "requestId", "string")
+    -- expect(6, "address", "string")
 
     local data = packOrder(items, requestId, address, channel)
     linkLayer.sendData(modem, channel, returnChannel, data)
 end
 
 local function packOrderResponse(requestId, address, result, success, channel)
-    expect(1, "requestId", "string")
-    expect(2, "address", "string")
-    expect(3, "result", "table")
-    expect(4, "success", "boolean")
-    expect(5, "channel", "number")
+    -- expect(1, "requestId", "string")
+    -- expect(2, "address", "string")
+    -- expect(3, "result", "table")
+    -- expect(4, "success", "boolean")
+    -- expect(5, "channel", "number")
 
     local data = {
         protocol = PROTOCOL,
@@ -127,13 +127,13 @@ local function packOrderResponse(requestId, address, result, success, channel)
 end
 
 local function sendOrderResponse(modem, channel, returnChannel, requestId, address, result, success)
-    expect(1, "modem", "table")
-    expect(2, "channel", "number")
-    expect(3, "returnChannel", "number")
-    expect(4, "requestId", "string")
-    expect(5, "address", "string")
-    expect(6, "result", "table")
-    expect(7, "success", "boolean")
+    -- expect(1, "modem", "table")
+    -- expect(2, "channel", "number")
+    -- expect(3, "returnChannel", "number")
+    -- expect(4, "requestId", "string")
+    -- expect(5, "address", "string")
+    -- expect(6, "result", "table")
+    -- expect(7, "success", "boolean")
 
     local data = packOrderResponse(requestId, address, result, success, channel)
     linkLayer.sendData(modem, channel, returnChannel, data)

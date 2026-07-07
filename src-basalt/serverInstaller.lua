@@ -59,8 +59,5 @@ local function main()
     configFile.write(configJson)
     configFile.close()
 end
-<<<<<<< HEAD
 
 main()
-=======
->>>>>>> origin/main

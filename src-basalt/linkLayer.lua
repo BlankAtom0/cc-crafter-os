@@ -19,10 +19,10 @@ local function decode(encoded)
 end
 
 local function sendData(modem, channel, returnChannel, data)
-    expect(1, modem, "table")
-    expect(2, channel, "number")
-    expect(3, returnChannel, "number")
-    expect(4, data, "table")
+    -- expect(1, modem, "table")
+    -- expect(2, channel, "number")
+    -- expect(3, returnChannel, "number")
+    -- expect(4, data, "table")
 
     local encoded = encode(data)
     local payload = {
@@ -35,11 +35,11 @@ local function sendData(modem, channel, returnChannel, data)
 end
 
 local function recievePayload(payload)
-    expect(1, payload, "table")
-    expect(field(payload, "protocol"), "string")
-    expect(field(payload, "channel"), "number")
-    expect(field(payload, "returnChannel"), "number")
-    expect(field(payload, "data"), "string")
+    -- expect(1, payload, "table")
+    -- expect(field(payload, "protocol"), "string")
+    -- expect(field(payload, "channel"), "number")
+    -- expect(field(payload, "returnChannel"), "number")
+    -- expect(field(payload, "data"), "string")
 
     if field(payload, "protocol") ~= PROTOCOL then
         return nil

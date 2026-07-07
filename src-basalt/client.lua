@@ -1,5 +1,5 @@
--- local config     = require("config")
-local basalt            = require("basalt")
+local config            = require "config"
+local basalt            = require "basalt"
 local itemLayer         = require "itemLayer"
 
 local allItems          = {}
@@ -130,13 +130,13 @@ local orderCount = "x" .. tostring(function()
     return tot
 end)
 
-local orderCountLabel = orderTab:addLabel({
-    x = "{parent.width}" - #orderCount - 1,
-    y = 1,
-    width = #orderCount,
-    height = 1,
-    text = orderCount
-})
+-- local orderCountLabel = orderTab:addLabel({
+--     x = "{parent.width} - #orderCount - 1",
+--     y = 1,
+--     width = #orderCount,
+--     height = 1,
+--     text = orderCount
+-- })
 
 local orderList = orderTab:addList({
     x = 1,
@@ -148,5 +148,8 @@ local orderList = orderTab:addList({
 basalt.onEvent(itemLayer.stockUpdate, onStockEvent)
 basalt.onEvent("send_order", itemLayer.sendOrder)
 basalt.onEvent("modem_message", itemLayer.handleModemEvent)
+
+local modem = peripheral.fine("modem")
+modem.open(config.STOCK_CHANNEL)
 
 basalt.run()

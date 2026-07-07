@@ -1,4 +1,5 @@
 local itemLayer = require "itemLayer"
+local config = require "config"
 
 local ticker, modem
 
@@ -32,7 +33,7 @@ local function findModem()
     modem = m
 end
 
-local function listStock(ticker)
+local function listStock()
     local ok
     ok, items = pcall(ticker.stock, true)
     if not ok or not items then
@@ -104,16 +105,17 @@ local function main()
     log("Server starting...")
     findTicker()
     findModem()
-    modem.open(53321)
+    modem.open(config.ORDER_CHANNEL)
 
     local function broadcastLoop()
         while true do
             itemLayer.sendStock(
                 modem,
-                53322, 53322,
+                config.STOCK_CHANNEL,
+                config.STOCK_CHANNEL,
                 listStock()
             )
-            sleep(5)
+            sleep(config.SCAN_DELAY)
         end
     end
 
