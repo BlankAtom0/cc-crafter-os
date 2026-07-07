@@ -1,17 +1,16 @@
-local config            = require "config"
-local basalt            = require "basalt"
-local itemLayer         = require "itemLayer"
+local config      = require "config"
+local basalt      = require "basalt"
+local itemLayer   = require "itemLayer"
 
-local allItems          = {}
-local filtered          = {}
-local searchListStrings = {}
-local order             = {}
+local allItems    = {}
+local filtered    = {}
+local order       = {}
 
-local lastUpdated       = 0
+local lastUpdated = 0
 
-local main              = basalt.getMainFrame()
+local main        = basalt.getMainFrame()
 
-local tabControl        = main:addTabControl({
+local tabControl  = main:addTabControl({
     x = 1,
     y = 1,
     width = "{parent.width}",
