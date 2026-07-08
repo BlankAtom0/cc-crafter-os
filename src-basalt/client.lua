@@ -22,8 +22,16 @@ local function formatNumber(num)
         index = index + 1
     end
 
+    local str = tostring(value)
+    local i, j = str:find('%.')
+    if i and i < 4 then
+        str = str:sub(1, i + 1)
+    else
+        str = tostring(math.floor(value))
+    end
+
     -- Math.floor prevents unwanted rounding up (e.g., 53.9k staying 53k)
-    return math.floor(value) .. suffixes[index]
+    return str .. suffixes[index]
 end
 
 local main = basalt.getMainFrame()
@@ -168,12 +176,12 @@ local orderList = orderTab:addList({
 
 local function tick()
     local delta = (os.epoch("utc") - lastUpdated) / 1000
-    if delta > config.STALE_TIMEOUT then
-        statusLabel.text = string.format("No signal (%ds ago)", delta)
-    elseif delta > 0 then
-        statusLabel.text = string.format("OK \xb7 %ds ago", delta)
-    else
+    if lastUpdated == 0 then
         statusLabel.text = "Waiting for connection..."
+    elseif delta > config.STALE_TIMEOUT then
+        statusLabel.text = string.format("No signal (%ds ago)", delta)
+    else then
+        statusLabel.text = string.format("OK \xb7 %ds ago", delta)
     end
 end
 
