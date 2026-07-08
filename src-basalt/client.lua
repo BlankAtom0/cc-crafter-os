@@ -24,7 +24,7 @@ local function formatNumber(num)
 
     local str = tostring(value)
     local i, j = str:find('%.')
-    if i and i < 4 then
+    if i and i < 3 then
         str = str:sub(1, i + 1)
     else
         str = tostring(math.floor(value))
@@ -104,7 +104,32 @@ local searchList = searchTab:addList({
     x = 1,
     y = 3,
     width = "{parent.width}",
-    height = "{parent.height - 3}"
+    height = "{parent.height - 4}"
+})
+
+local searchListInputCount = searchTab:addInput({
+    x = 1,
+    y = "{parent.height - 3}",
+    width = 10,
+    height = 1,
+    placeholder = "Enter Amount",
+    --visible = false
+})
+
+local searchListInputSubmit = searchTab:addButton({
+    x = 12,
+    y = "{parent.height - 3}",
+    width = 7,
+    height = 1,
+    text = "Submit"
+})
+
+local searchListInputCancel = searchTab:addButton({
+    x = 19,
+    y = "{parent.height - 3}",
+    width = 7,
+    height = 1,
+    text = "Cancel"
 })
 
 local function updateSearchList(items)
@@ -114,7 +139,7 @@ local function updateSearchList(items)
         local item = ""
         item = i.displayName .. item.rep(" ", searchList.width)
         count = "x" .. formatNumber(i.count)
-        item = item:sub(1, searchList.width - #count - 1) .. count
+        item = item:sub(1, searchList.width - 6) .. count
         searchList:addItem(item)
     end
     searchList.offset = scroll
