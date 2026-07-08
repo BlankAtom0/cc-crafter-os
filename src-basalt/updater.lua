@@ -21,3 +21,5 @@ local function update()
         shell.run("wget", serverAddress)
     end
 end
+
+return update

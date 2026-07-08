@@ -1,6 +1,6 @@
 local ccexpect = require "cc.expect"
 local expect, field = ccexpect.expect, ccexpect.field
-local config = require("config").config
+local config = require "config"
 local linkLayer = require "linkLayer"
 
 local PROTOCOL = "itemLayer"

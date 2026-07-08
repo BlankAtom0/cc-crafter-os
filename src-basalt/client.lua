@@ -28,9 +28,6 @@ end
 
 local main = basalt.getMainFrame()
 
-local timer = main:addTimer()
-timer.interval = 1
-
 local tabControl = main:addTabControl({
     x = 1,
     y = 1,
@@ -184,6 +181,7 @@ local function tick()
     end
 end
 
+local timer = main:addTimer()
 timer.action = tick
 timer:start()
 
