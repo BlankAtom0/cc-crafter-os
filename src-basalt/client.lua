@@ -7,7 +7,6 @@ local filtered    = {}
 local order       = {}
 
 local lastUpdated = 0
-<<<<<<< HEAD
 local lastQuery   = ""
 
 local function formatNumber(num)
@@ -33,12 +32,6 @@ local timer = main:addTimer()
 timer.interval = 1
 
 local tabControl = main:addTabControl({
-=======
-
-local main        = basalt.getMainFrame()
-
-local tabControl  = main:addTabControl({
->>>>>>> refs/remotes/origin/main
     x = 1,
     y = 1,
     width = "{parent.width}",
