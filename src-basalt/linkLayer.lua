@@ -41,10 +41,10 @@ local function recievePayload(payload)
     -- expect(field(payload, "returnChannel"), "number")
     -- expect(field(payload, "data"), "string")
 
-    if field(payload, "protocol") ~= PROTOCOL then
+    if payload.protocol ~= PROTOCOL then
         return nil
     end
-    return decode(field(payload, "data"))
+    return decode(payload.data)
 end
 
 return { encode = encode, decode = decode, sendData = sendData, recievePayload = recievePayload }

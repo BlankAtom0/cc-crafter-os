@@ -1,17 +1,37 @@
-local config            = require "config"
-local basalt            = require "basalt"
-local itemLayer         = require "itemLayer"
+local config      = require "config"
+local basalt      = require "basalt"
+local itemLayer   = require "itemLayer"
 
-local allItems          = {}
-local filtered          = {}
-local searchListStrings = {}
-local order             = {}
+local allItems    = {}
+local filtered    = {}
+local order       = {}
 
-local lastUpdated       = 0
+local lastUpdated = 0
+local lastQuery   = ""
 
-local main              = basalt.getMainFrame()
+local function formatNumber(num)
+    if not num then return "0" end
+    if num < 1000 then return tostring(num) end
 
-local tabControl        = main:addTabControl({
+    local suffixes = { "k", "m", "b", "t" }
+    local index = 0
+    local value = num
+
+    while value >= 1000 and index < #suffixes do
+        value = value / 1000
+        index = index + 1
+    end
+
+    -- Math.floor prevents unwanted rounding up (e.g., 53.9k staying 53k)
+    return math.floor(value) .. suffixes[index]
+end
+
+local main = basalt.getMainFrame()
+
+local timer = main:addTimer()
+timer.interval = 1
+
+local tabControl = main:addTabControl({
     x = 1,
     y = 1,
     width = "{parent.width}",
@@ -83,14 +103,16 @@ local searchList = searchTab:addList({
 })
 
 local function updateSearchList(items)
+    local scroll = searchList:getScroll()
     searchList:clear()
     for _, i in ipairs(items) do
         local item = ""
         item = i.displayName .. item.rep(" ", searchList.width)
-        count = "x" .. tostring(i.count)
-        item = item:sub(1, searchList.width - #count) .. count
+        count = "x" .. formatNumber(i.count)
+        item = item:sub(1, searchList.width - #count - 1) .. count
         searchList:addItem(item)
     end
+    searchList:setScroll(scroll)
 end
 
 local function applyFilter(items)
@@ -145,11 +167,31 @@ local orderList = orderTab:addList({
     height = "{parent.height - 3}"
 })
 
+local function tick()
+    if searchInput.text ~= lastQuery then
+        filtered = applyFilter(allItems)
+        updateSearchList(filtered)
+        lastQuery = searchInput.text
+    end
+
+    local delta = os.epoch("utc") - lastUpdated
+    if delta > config.STALE_TIMEOUT then
+        statusLabel.text = string.format("No signal (%ds ago)", delta)
+    elseif delta > 0 then
+        statusLabel.text = string.format("OK \xb7 %ds ago", delta)
+    else
+        statusLabel.text = "Waiting for connection..."
+    end
+end
+
+timer.action = tick
+timer:start()
+
 basalt.onEvent(itemLayer.stockUpdate, onStockEvent)
 basalt.onEvent("send_order", itemLayer.sendOrder)
 basalt.onEvent("modem_message", itemLayer.handleModemEvent)
 
-local modem = peripheral.fine("modem")
+local modem = peripheral.find("modem")
 modem.open(config.STOCK_CHANNEL)
 
 basalt.run()

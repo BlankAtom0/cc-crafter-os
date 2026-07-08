@@ -3,6 +3,7 @@ local itemLayerAddress =
 local linkLayerAddress =
 "https://raw.githubusercontent.com/BlankAtom0/cc-crafter-os/refs/heads/main/src-basalt/linkLayer.lua"
 local serverAddress = "https://raw.githubusercontent.com/BlankAtom0/cc-crafter-os/refs/heads/main/src-basalt/server.lua"
+local configAddress = "https://raw.githubusercontent.com/BlankAtom0/cc-crafter-os/refs/heads/main/src-basalt/config.lua"
 
 local function printHeader(text)
     print()
@@ -44,6 +45,7 @@ local function main()
     local scanDelay = askNumber("Enter scan delay", 5)
 
     local config = {
+        TYPE = "server",
         STOCK_CHANNEL = stockChannel,
         ORDER_CHANNEL = orderChannel,
         SCAN_DELAY = scanDelay
@@ -58,6 +60,9 @@ local function main()
     local configFile = fs.open("config.json", "w")
     configFile.write(configJson)
     configFile.close()
+
+    print("Installing config")
+    shell.run("wget", configAddress)
 end
 
 main()

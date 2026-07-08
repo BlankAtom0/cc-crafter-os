@@ -1,5 +1,5 @@
-local configFile = fs.open("config.lua", "r")
+local configFile = fs.open("config.json", "r")
+local configJS = configFile.readAll()
+local config = textutils.unserialiseJSON(configJS)
 
-local config = textutils.unserialiseJSON(configFile.readAll())
-
-return config
+return { config = config }

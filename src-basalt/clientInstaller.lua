@@ -3,6 +3,7 @@ local itemLayerAddress =
 local linkLayerAddress =
 "https://raw.githubusercontent.com/BlankAtom0/cc-crafter-os/refs/heads/main/src-basalt/linkLayer.lua"
 local clientAddress = "https://raw.githubusercontent.com/BlankAtom0/cc-crafter-os/refs/heads/main/src-basalt/client.lua"
+local configAddress = "https://raw.githubusercontent.com/BlankAtom0/cc-crafter-os/refs/heads/main/src-basalt/config.lua"
 
 local function printHeader(text)
     print()
@@ -48,6 +49,7 @@ local function main()
     local staleTimeout = askNumber("Enter stale timeout", 15)
 
     local config = {
+        TYPE = "client",
         STOCK_CHANNEL = stockChannel,
         ORDER_CHANNEL = orderChannel,
         CLIENT_CHANNEL = orderChannel + clientNo + 1,
@@ -63,6 +65,9 @@ local function main()
     local configFile = fs.open("config.json", "w")
     configFile.write(configJson)
     configFile.close()
+
+    print("Installing config")
+    shell.run("wget", configAddress)
 end
 
 main()

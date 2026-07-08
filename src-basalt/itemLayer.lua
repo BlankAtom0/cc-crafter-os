@@ -39,14 +39,8 @@ local function handleData(data)
     os.queueEvent(data.type, data)
 end
 
-local function handleModemEvent(event)
-    -- expect(1, "event", "table")
-
-    if event[1] ~= "modem_message" then
-        return nil
-    end
-
-    local payload = event[5]
+local function handleModemEvent(side, channel, returnChannel, message, distance)
+    local payload = textutils.unserialise(message)
     local data = linkLayer.recievePayload(payload)
     handleData(data)
 end
