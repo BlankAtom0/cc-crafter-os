@@ -167,14 +167,6 @@ local orderList = orderTab:addList({
 })
 
 local function tick()
-    print(searchInput.text)
-    print(lastQuery)
-    if searchInput.text ~= lastQuery then
-        filtered = applyFilter(allItems)
-        updateSearchList(filtered)
-        lastQuery = searchInput.text
-    end
-
     local delta = (os.epoch("utc") - lastUpdated) / 1000
     if delta > config.STALE_TIMEOUT then
         statusLabel.text = string.format("No signal (%ds ago)", delta)
@@ -185,10 +177,16 @@ local function tick()
     end
 end
 
+local function onSearchInput()
+    filtered = applyFilter(allItems)
+    updateSearchList(filtered)
+end
+
 local timer = main:addTimer()
 timer.action = tick
 timer:start()
 
+searchInput:onEvent("char", onSearchInput)
 basalt.onEvent(itemLayer.stockUpdate, onStockEvent)
 basalt.onEvent("send_order", itemLayer.sendOrder)
 basalt.onEvent("modem_message", itemLayer.handleModemEvent)
