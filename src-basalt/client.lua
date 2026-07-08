@@ -100,7 +100,7 @@ local searchList = searchTab:addList({
 })
 
 local function updateSearchList(items)
-    local scroll = searchList:getScroll()
+    local ok, scroll = pcall(searchList.getScroll)
     searchList:clear()
     for _, i in ipairs(items) do
         local item = ""
@@ -109,7 +109,9 @@ local function updateSearchList(items)
         item = item:sub(1, searchList.width - #count - 1) .. count
         searchList:addItem(item)
     end
-    searchList:setScroll(scroll)
+    if ok then
+        searchList:setScroll(scroll)
+    end
 end
 
 local function applyFilter(items)
