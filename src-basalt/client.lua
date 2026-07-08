@@ -167,13 +167,15 @@ local orderList = orderTab:addList({
 })
 
 local function tick()
+    print(searchInput.text)
+    print(lastQuery)
     if searchInput.text ~= lastQuery then
         filtered = applyFilter(allItems)
         updateSearchList(filtered)
         lastQuery = searchInput.text
     end
 
-    local delta = os.epoch("utc") - lastUpdated
+    local delta = (os.epoch("utc") - lastUpdated) / 1000
     if delta > config.STALE_TIMEOUT then
         statusLabel.text = string.format("No signal (%ds ago)", delta)
     elseif delta > 0 then
