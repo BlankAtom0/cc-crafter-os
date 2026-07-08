@@ -109,7 +109,7 @@ local searchList = searchTab:addList({
 
 local searchListInputCount = searchTab:addInput({
     x = 1,
-    y = "{parent.height - 3}",
+    y = "{parent.height - 1}",
     width = 10,
     height = 1,
     placeholder = "Enter Amount",
@@ -118,7 +118,7 @@ local searchListInputCount = searchTab:addInput({
 
 local searchListInputSubmit = searchTab:addButton({
     x = 12,
-    y = "{parent.height - 3}",
+    y = "{parent.height - 1}",
     width = 7,
     height = 1,
     text = "Submit"
@@ -126,7 +126,7 @@ local searchListInputSubmit = searchTab:addButton({
 
 local searchListInputCancel = searchTab:addButton({
     x = 19,
-    y = "{parent.height - 3}",
+    y = "{parent.height - 1}",
     width = 7,
     height = 1,
     text = "Cancel"
