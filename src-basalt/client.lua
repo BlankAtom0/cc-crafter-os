@@ -117,17 +117,17 @@ local searchListInputCount = searchTab:addInput({
 })
 
 local searchListInputSubmit = searchTab:addButton({
-    x = 12,
+    x = 13,
     y = "{parent.height - 1}",
-    width = 7,
+    width = 6,
     height = 1,
     text = "Submit"
 })
 
 local searchListInputCancel = searchTab:addButton({
-    x = 19,
+    x = 20,
     y = "{parent.height - 1}",
-    width = 7,
+    width = 6,
     height = 1,
     text = "Cancel"
 })
