@@ -186,7 +186,8 @@ local timer = main:addTimer()
 timer.action = tick
 timer:start()
 
-searchInput:onEvent("char", onSearchInput)
+searchInput:onChange("text", onSearchInput)
+
 basalt.onEvent(itemLayer.stockUpdate, onStockEvent)
 basalt.onEvent("send_order", itemLayer.sendOrder)
 basalt.onEvent("modem_message", itemLayer.handleModemEvent)
