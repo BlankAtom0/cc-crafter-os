@@ -6,6 +6,7 @@ local allItems    = {}
 local filtered    = {}
 local order       = {}
 
+local maxAmount
 local lastUpdated = 0
 local lastQuery   = ""
 
@@ -104,7 +105,7 @@ local searchList = searchTab:addList({
     x = 1,
     y = 3,
     width = "{parent.width}",
-    height = "{parent.height - 4}"
+    height = "{parent.height - 3}"
 })
 
 local searchListInputCount = searchTab:addInput({
@@ -113,7 +114,7 @@ local searchListInputCount = searchTab:addInput({
     width = 10,
     height = 1,
     placeholder = "Enter Amount",
-    --visible = false
+    visible = false
 })
 
 local searchListInputSubmit = searchTab:addButton({
@@ -121,7 +122,8 @@ local searchListInputSubmit = searchTab:addButton({
     y = "{parent.height - 1}",
     width = 6,
     height = 1,
-    text = "Submit"
+    text = "Submit",
+    visible = false
 })
 
 local searchListInputCancel = searchTab:addButton({
@@ -129,7 +131,8 @@ local searchListInputCancel = searchTab:addButton({
     y = "{parent.height - 1}",
     width = 6,
     height = 1,
-    text = "Cancel"
+    text = "Cancel",
+    visible = false
 })
 
 local function updateSearchList(items)
@@ -166,6 +169,53 @@ local function onStockEvent(data)
     filtered = applyFilter(allItems)
     updateSearchList(filtered)
 end
+
+local function addToOrder(item, count)
+    table.insert(order, { item = item, count = count })
+end
+
+local function onSearchInput()
+    filtered = applyFilter(allItems)
+    updateSearchList(filtered)
+end
+
+local function onSearchListSelect(idx, item)
+    maxAmount = filtered[idx].count
+    searchListInputCount.visible = true
+    searchListInputSubmit.visible = true
+    searchListInputCancel.visible = true
+end
+
+local function onSearchListSubmit()
+    if maxAmount == nil then return end
+    if searchCounts.text == "" then return end
+    local count = tonumber(searchListInputCount.text)
+    if count == nil then return end
+    if count > maxAmount then count = maxAmount end
+    searchListInputCount.text = ""
+
+    index = searchList:getSelectedIndex()
+    addToOrder(filtered[index], count)
+
+    searchList:setSelectedIndex(nil)
+    searchListInputCount.visible = false
+    searchListInputSubmit.visible = false
+    searchListInputCancel.visible = false
+
+end
+
+local function onSearchListCancel()
+    searchList:setSelectedIndex(nil)
+    searchListInputCount.visible = false
+    searchListInputSubmit.visible = false
+    searchListInputCancel.visible = false
+end
+
+searchInput:onChange("text", onSearchInput)
+searchList:onSelect(onSearchListSelect)
+searchListInputCount:onSubmit(onSearchListSubmit)
+searchListInputSubmit:onClick(onSearchListSubmit)
+searchListInputCancel:onClick(onSearchListCancel)
 
 ---- Order Tab ----
 orderTab:addLabel({
@@ -208,16 +258,11 @@ local function tick()
     end
 end
 
-local function onSearchInput()
-    filtered = applyFilter(allItems)
-    updateSearchList(filtered)
-end
-
 local timer = main:addTimer()
 timer.action = tick
 timer:start()
 
-searchInput:onChange("text", onSearchInput)
+
 
 basalt.onEvent(itemLayer.stockUpdate, onStockEvent)
 basalt.onEvent("send_order", itemLayer.sendOrder)
