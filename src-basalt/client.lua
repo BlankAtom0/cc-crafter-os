@@ -108,7 +108,7 @@ local searchList = searchTab:addList({
 })
 
 local function updateSearchList(items)
-    local ok, scroll = pcall(searchList.getScroll)
+    local scroll = searchList.offset
     searchList:clear()
     for _, i in ipairs(items) do
         local item = ""
@@ -117,9 +117,7 @@ local function updateSearchList(items)
         item = item:sub(1, searchList.width - #count - 1) .. count
         searchList:addItem(item)
     end
-    if ok then
-        searchList:setScroll(scroll)
-    end
+    searchList.offset = scroll
 end
 
 local function applyFilter(items)
@@ -180,7 +178,7 @@ local function tick()
         statusLabel.text = "Waiting for connection..."
     elseif delta > config.STALE_TIMEOUT then
         statusLabel.text = string.format("No signal (%ds ago)", delta)
-    else then
+    else
         statusLabel.text = string.format("OK \xb7 %ds ago", delta)
     end
 end
