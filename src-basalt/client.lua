@@ -173,7 +173,10 @@ end
 local function onStockEvent(data)
     lastUpdated = data.timestamp or os.epoch("utc")
     allItems = data.items or {}
-    if tabControl.activeTab ~= searchTab.id then return end
+    if tabControl.activeTab ~= searchTab.id then
+        basalt.LOGGER.info("activeTab: %s, searchTab.id: %s", tabControl.activeTab, searchTab.id)
+        return
+    end
     filtered = applyFilter(allItems)
     updateSearchList(filtered)
 end
@@ -238,7 +241,7 @@ orderTab:addLabel({
 local orderCount = "x" .. #order
 
 local orderCountLabel = orderTab:addLabel({
-    x = "{parent.width - #5}",
+    x = "{parent.width - 5}",
     y = 1,
     width = #orderCount,
     height = 1,
