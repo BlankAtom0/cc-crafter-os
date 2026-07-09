@@ -11,6 +11,9 @@ local maxAmount   = 0
 local lastUpdated = 0
 local lastQuery   = ""
 
+basalt.LOGGER.setEnabled(true)
+basalt.LOGGER.setLogToFile(true)
+
 local function formatNumber(num)
     if not num then return "0" end
     if num < 1000 then return tostring(num) end
@@ -181,7 +184,8 @@ local function onSearchInput()
 end
 
 local function onSearchListSelect(index, item)
-    maxAmount = filtered[index].count
+    --maxAmount = filtered[index].count
+    basalt.LOGGER.log(textutils.serialise(filtered))
     selectedIdx = index
     searchListInputCount.visible = true
     searchListInputSubmit.visible = true
