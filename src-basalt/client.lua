@@ -235,7 +235,7 @@ orderTab:addLabel({
 local orderCount = "x" .. #order
 
 local orderCountLabel = orderTab:addLabel({
-    x = "{parent.width - #orderCount - 1}",
+    x = "{parent.width - #5}",
     y = 1,
     width = #orderCount,
     height = 1,
