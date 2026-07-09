@@ -6,7 +6,9 @@ local allItems    = {}
 local filtered    = {}
 local order       = {}
 
-local selectedIdx = nil
+local searchSelectedIdx = nil
+local orderSelectedIdx  = nil
+
 local maxAmount   = 0
 local lastUpdated = 0
 local lastQuery   = ""
@@ -148,8 +150,8 @@ local function updateSearchList(items)
         searchList:addItem(item)
     end
     searchList.offset = scroll
-    if selectedIdx then
-        searchList.items[selectedIdx].selected = true
+    if searchSelectedIdx then
+        searchList.items[searchSelectedIdx].selected = true
     end
 end
 
@@ -171,12 +173,13 @@ end
 local function onStockEvent(data)
     lastUpdated = data.timestamp or os.epoch("utc")
     allItems = data.items or {}
+    if tabControl.activeTab ~= searchTab.id then return end
     filtered = applyFilter(allItems)
     updateSearchList(filtered)
 end
 
 local function addToOrder(item, count)
-    table.insert(order, { item = item, count = count })
+    table.insert(order, { displayName = item.displayName, name = item.name, count = count })
 end
 
 local function onSearchInput()
@@ -186,7 +189,7 @@ end
 
 local function onSearchListSelect(item, index)
     maxAmount = filtered[index].count
-    selectedIdx = index
+    searchSelectedIdx = index
     searchListInputCount.visible = true
     searchListInputCancel.visible = true
     searchList:setHeight("{parent.height - 4}")
@@ -200,19 +203,19 @@ local function onSearchListSubmit()
     if count > maxAmount then count = maxAmount end
     searchListInputCount.text = ""
 
-    addToOrder(filtered[selectedIdx], count)
+    addToOrder(filtered[searchSelectedIdx], count)
 
     searchListInputCount.visible = false
     searchListInputCancel.visible = false
     searchList:setHeight("{parent.height - 3}")
-    if selectedIdx then
-        searchList.items[selectedIdx].selected = false
-        selectedIdx = 0
+    if searchSelectedIdx then
+        searchList.items[searchSelectedIdx].selected = false
+        searchSelectedIdx = 0
     end
 end
 
 local function onSearchListCancel()
-    selectedIdx = 0
+    searchSelectedIdx = 0
     searchListInputCount.visible = false
     searchListInputCancel.visible = false
     searchList:setHeight("{parent.height - 3}")
@@ -249,6 +252,29 @@ local orderList = orderTab:addList({
     height = "{parent.height - 3}"
 })
 
+local function updateOrderList()
+    local scroll = orderList.offset
+    orderList:clear()
+    for _, i in ipairs(order) do
+        local item = ""
+        item = i.displayName .. item.rep(" ", orderList.width)
+        count = "x" .. formatNumber(i.count)
+        item = item:sub(1, orderList.width - 6) .. count
+        orderList:addItem(item)
+    end
+    orderList.offset = scroll
+    if orderSelectedIdx then
+        orderList.items[orderSelectedIdx].selected = true
+    end
+end
+
+local function onOrderListSelect(item, index)
+    maxAmount = order[index].count
+    orderSelectedIdx = index
+end
+
+orderList:onSelect(onOrderListSelect)
+
 local function tick()
     local delta = (os.epoch("utc") - lastUpdated) / 1000
     if lastUpdated == 0 then
@@ -260,6 +286,16 @@ local function tick()
     end
 end
 
+local function onTabChange()
+    maxAmount = 0
+    if tabControl.activeTab == searchTab.id then
+        filtered = applyFilter(allItems)
+        updateSearchList(filtered)
+    elseif tabControl.activeTab == orderTab.id then
+        updateOrderList()
+    end
+end
+
 local timer = main:addTimer()
 timer.action = tick
 timer:start()
@@ -268,7 +304,7 @@ basalt.onEvent(itemLayer.stockUpdate, onStockEvent)
 basalt.onEvent("send_order", itemLayer.sendOrder)
 basalt.onEvent("modem_message", itemLayer.handleModemEvent)
 
-tabControl:onChange("activeTab", function() basalt.LOGGER.info("activeTab: ", tabControl.activeTab) basalt.LOGGER.info(tabControl.tabs[tabControl.activeTab]) end)
+tabControl:onChange("activeTab", onTabChange)
 
 local modem = peripheral.find("modem")
 modem.open(config.STOCK_CHANNEL)
