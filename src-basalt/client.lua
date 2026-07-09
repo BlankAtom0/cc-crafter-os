@@ -216,7 +216,7 @@ local function onSearchListCancel()
 end
 
 searchInput:onChange("text", onSearchInput)
-searchList:onSelect(onSearchListSelect)
+searchList:onSelect(function(index, item) print("Selected : ", index, item))
 searchListInputCount:onSubmit(onSearchListSubmit)
 searchListInputSubmit:onClick(onSearchListSubmit)
 searchListInputCancel:onClick(onSearchListCancel)
