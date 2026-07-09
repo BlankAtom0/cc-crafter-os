@@ -183,9 +183,8 @@ local function onSearchInput()
     updateSearchList(filtered)
 end
 
-local function onSearchListSelect(index, item)
-    --maxAmount = filtered[index].count
-    basalt.LOGGER.log(textutils.serialise(filtered))
+local function onSearchListSelect(item, index)
+    maxAmount = filtered[index].count
     selectedIdx = index
     searchListInputCount.visible = true
     searchListInputSubmit.visible = true
@@ -205,18 +204,18 @@ local function onSearchListSubmit()
     searchListInputCount.visible = false
     searchListInputSubmit.visible = false
     searchListInputCancel.visible = false
-
+    selectedIdx = 0
 end
 
 local function onSearchListCancel()
-    searchList:setSelectedIndex(nil)
+    selectedIdx = 0
     searchListInputCount.visible = false
     searchListInputSubmit.visible = false
     searchListInputCancel.visible = false
 end
 
 searchInput:onChange("text", onSearchInput)
-searchList:onSelect(function(index, item) print("Selected : ", index, item))
+searchList:onSelect(onSearchListSelect)
 searchListInputCount:onSubmit(onSearchListSubmit)
 searchListInputSubmit:onClick(onSearchListSubmit)
 searchListInputCancel:onClick(onSearchListCancel)
