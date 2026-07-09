@@ -189,6 +189,7 @@ local function onSearchListSelect(item, index)
     searchListInputCount.visible = true
     searchListInputSubmit.visible = true
     searchListInputCancel.visible = true
+    searchList.:setHeight("{parent.height - 4}")
 end
 
 local function onSearchListSubmit()
@@ -204,6 +205,7 @@ local function onSearchListSubmit()
     searchListInputCount.visible = false
     searchListInputSubmit.visible = false
     searchListInputCancel.visible = false
+    searchList.:setHeight("{parent.height - 3}")
     selectedIdx = 0
 end
 
@@ -212,6 +214,7 @@ local function onSearchListCancel()
     searchListInputCount.visible = false
     searchListInputSubmit.visible = false
     searchListInputCancel.visible = false
+    searchList.:setHeight("{parent.height - 3}")
 end
 
 searchInput:onChange("text", onSearchInput)
