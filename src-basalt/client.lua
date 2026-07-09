@@ -39,6 +39,11 @@ local function formatNumber(num)
     return str .. suffixes[index]
 end
 
+local function unformatNumber(str)
+    if not str then return 0 end
+    return tonumber(str:gsub("[kmbt]", "")) * (1000 ^ str:find("[kmbt]"))
+end
+
 local main = basalt.getMainFrame()
 
 local tabControl = main:addTabControl({
@@ -127,7 +132,9 @@ local searchListInputCancel = searchTab:addButton({
     width = 6,
     height = 1,
     text = "Cancel",
-    visible = false
+    visible = false,
+    background = colours.red,
+    foreground = colours.white
 })
 
 local function updateSearchList(items)
@@ -141,6 +148,9 @@ local function updateSearchList(items)
         searchList:addItem(item)
     end
     searchList.offset = scroll
+    if selectedIdx then
+        searchList.items[selectedIdx].selected = true
+    end
 end
 
 local function applyFilter(items)
@@ -195,7 +205,10 @@ local function onSearchListSubmit()
     searchListInputCount.visible = false
     searchListInputCancel.visible = false
     searchList:setHeight("{parent.height - 3}")
-    selectedIdx = 0
+    if selectedIdx then
+        searchList.items[selectedIdx].selected = false
+        selectedIdx = 0
+    end
 end
 
 local function onSearchListCancel()
@@ -219,19 +232,15 @@ orderTab:addLabel({
     text = title
 })
 
-local orderCount = "x" .. tostring(function()
-    local tot = 0
-    for _, i in order do tot = tot + i.count end
-    return tot
-end)
+local orderCount = "x" .. #order
 
--- local orderCountLabel = orderTab:addLabel({
---     x = "{parent.width} - #orderCount - 1",
---     y = 1,
---     width = #orderCount,
---     height = 1,
---     text = orderCount
--- })
+local orderCountLabel = orderTab:addLabel({
+    x = "{parent.width - #orderCount - 1}",
+    y = 1,
+    width = #orderCount,
+    height = 1,
+    text = orderCount
+})
 
 local orderList = orderTab:addList({
     x = 1,
@@ -255,11 +264,11 @@ local timer = main:addTimer()
 timer.action = tick
 timer:start()
 
-
-
 basalt.onEvent(itemLayer.stockUpdate, onStockEvent)
 basalt.onEvent("send_order", itemLayer.sendOrder)
 basalt.onEvent("modem_message", itemLayer.handleModemEvent)
+
+tabControl:onChange("activeTab", function() basalt.LOGGER.info("activeTab: ", tabControl.activeTab) basalt.LOGGER.info(tabControl.tabs[tabControl.activeTab]) end)
 
 local modem = peripheral.find("modem")
 modem.open(config.STOCK_CHANNEL)
