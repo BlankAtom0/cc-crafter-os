@@ -150,7 +150,7 @@ local function updateSearchList(items)
         searchList:addItem(item)
     end
     searchList.offset = scroll
-    if searchSelectedIdx then
+    if searchSelectedIdx > 0 then
         searchList.items[searchSelectedIdx].selected = true
     end
 end
@@ -210,7 +210,7 @@ local function onSearchListSubmit()
     searchListInputCount.visible = false
     searchListInputCancel.visible = false
     searchList:setHeight("{parent.height - 3}")
-    if searchSelectedIdx then
+    if searchSelectedIdx > 0 then
         searchList.items[searchSelectedIdx].selected = false
         searchSelectedIdx = 0
     end
