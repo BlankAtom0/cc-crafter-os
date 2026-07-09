@@ -115,18 +115,9 @@ local searchList = searchTab:addList({
 local searchListInputCount = searchTab:addInput({
     x = 1,
     y = "{parent.height - 1}",
-    width = 10,
+    width = 18,
     height = 1,
     placeholder = "Enter Amount",
-    visible = false
-})
-
-local searchListInputSubmit = searchTab:addButton({
-    x = 13,
-    y = "{parent.height - 1}",
-    width = 6,
-    height = 1,
-    text = "Submit",
     visible = false
 })
 
@@ -189,7 +180,7 @@ local function onSearchListSelect(item, index)
     searchListInputCount.visible = true
     searchListInputSubmit.visible = true
     searchListInputCancel.visible = true
-    searchList.:setHeight("{parent.height - 4}")
+    searchList:setHeight("{parent.height - 4}")
 end
 
 local function onSearchListSubmit()
@@ -205,7 +196,7 @@ local function onSearchListSubmit()
     searchListInputCount.visible = false
     searchListInputSubmit.visible = false
     searchListInputCancel.visible = false
-    searchList.:setHeight("{parent.height - 3}")
+    searchList:setHeight("{parent.height - 3}")
     selectedIdx = 0
 end
 
@@ -214,13 +205,12 @@ local function onSearchListCancel()
     searchListInputCount.visible = false
     searchListInputSubmit.visible = false
     searchListInputCancel.visible = false
-    searchList.:setHeight("{parent.height - 3}")
+    searchList:setHeight("{parent.height - 3}")
 end
 
 searchInput:onChange("text", onSearchInput)
 searchList:onSelect(onSearchListSelect)
 searchListInputCount:onSubmit(onSearchListSubmit)
-searchListInputSubmit:onClick(onSearchListSubmit)
 searchListInputCancel:onClick(onSearchListCancel)
 
 ---- Order Tab ----
