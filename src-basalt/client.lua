@@ -6,7 +6,8 @@ local allItems    = {}
 local filtered    = {}
 local order       = {}
 
-local maxAmount
+local selectedIdx = nil
+local maxAmount   = 0
 local lastUpdated = 0
 local lastQuery   = ""
 
@@ -179,8 +180,9 @@ local function onSearchInput()
     updateSearchList(filtered)
 end
 
-local function onSearchListSelect(idx, item)
-    maxAmount = filtered[idx].count
+local function onSearchListSelect(index, item)
+    maxAmount = filtered[index].count
+    selectedIdx = index
     searchListInputCount.visible = true
     searchListInputSubmit.visible = true
     searchListInputCancel.visible = true
@@ -194,10 +196,8 @@ local function onSearchListSubmit()
     if count > maxAmount then count = maxAmount end
     searchListInputCount.text = ""
 
-    index = searchList:getSelectedIndex()
-    addToOrder(filtered[index], count)
+    addToOrder(filtered[selectedIdx], count)
 
-    searchList:setSelectedIndex(nil)
     searchListInputCount.visible = false
     searchListInputSubmit.visible = false
     searchListInputCancel.visible = false
