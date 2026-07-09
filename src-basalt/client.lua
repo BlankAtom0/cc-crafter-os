@@ -173,8 +173,7 @@ end
 local function onStockEvent(data)
     lastUpdated = data.timestamp or os.epoch("utc")
     allItems = data.items or {}
-    if tabControl.activeTab ~= searchTab.id then
-        basalt.LOGGER.info("activeTab: %s, searchTab.id: %s", tabControl.activeTab, searchTab.id)
+    if tabControl.activeTab ~= 1 then
         return
     end
     filtered = applyFilter(allItems)
