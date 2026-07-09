@@ -178,7 +178,6 @@ local function onSearchListSelect(item, index)
     maxAmount = filtered[index].count
     selectedIdx = index
     searchListInputCount.visible = true
-    searchListInputSubmit.visible = true
     searchListInputCancel.visible = true
     searchList:setHeight("{parent.height - 4}")
 end
@@ -194,7 +193,6 @@ local function onSearchListSubmit()
     addToOrder(filtered[selectedIdx], count)
 
     searchListInputCount.visible = false
-    searchListInputSubmit.visible = false
     searchListInputCancel.visible = false
     searchList:setHeight("{parent.height - 3}")
     selectedIdx = 0
@@ -203,7 +201,6 @@ end
 local function onSearchListCancel()
     selectedIdx = 0
     searchListInputCount.visible = false
-    searchListInputSubmit.visible = false
     searchListInputCancel.visible = false
     searchList:setHeight("{parent.height - 3}")
 end
